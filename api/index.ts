@@ -1,5 +1,5 @@
 import type { Request, Response } from 'express';
-import { createApp } from '../server';
+import { createApp } from '../src/server/app';
 
 // Keep one initialized Express application per warm Vercel function instance.
 const appPromise = createApp();
