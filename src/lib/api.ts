@@ -4,11 +4,9 @@ const API_BASE = '/api';
 
 function getHeaders() {
   const token = localStorage.getItem('erp_token');
-  const environment = localStorage.getItem('erp_environment');
   return {
     'Content-Type': 'application/json',
-    ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
-    ...(environment === 'live' || environment === 'demo' ? { 'X-ERP-Environment': environment } : {})
+    ...(token ? { 'Authorization': `Bearer ${token}` } : {})
   };
 }
 
@@ -146,7 +144,8 @@ export const api = {
   admin: {
     backup: () => request('/admin/backup'),
     restore: (database: any) => request('/admin/restore', { method: 'POST', body: JSON.stringify({ database }) }),
-    clearSerialData: () => request('/admin/clear-serial-data', { method: 'POST' })
+    clearSerialData: () => request('/admin/clear-serial-data', { method: 'POST' }),
+    clearAllData: () => request('/admin/clear-all', { method: 'POST' })
   },
   environment: {
     get: () => request('/environment'),

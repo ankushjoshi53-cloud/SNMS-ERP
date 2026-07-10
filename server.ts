@@ -4,6 +4,7 @@ import fs from 'fs';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import { createServer as createViteServer } from 'vite';
+import { neon } from '@neondatabase/serverless';
 
 import {
   User,
@@ -26,6 +27,120 @@ const PORT = 3000;
 const JWT_SECRET = process.env.JWT_SECRET || 'super_secret_lead_acid_erp_key';
 
 let currentEnvironment: 'live' | 'demo' = 'demo';
+let dbLoadedEnv: 'live' | 'demo' | null = null;
+let activeLoadPromises: Record<'live' | 'demo', Promise<void> | null> = {
+  live: null,
+  demo: null
+};
+let cachedDBs: Record<'live' | 'demo', ERPDatabase | null> = {
+  live: null,
+  demo: null
+};
+let pendingWrite: Promise<any> | null = null;
+
+const getNeonSql = () => {
+  const url = process.env.DATABASE_URL;
+  if (!url) return null;
+  if (!url.startsWith('postgres://') && !url.startsWith('postgresql://')) {
+    console.warn(`DATABASE_URL is not a valid PostgreSQL connection string (must start with postgres:// or postgresql://). Provided value: "${url}". Falling back to file-based database storage.`);
+    return null;
+  }
+  try {
+    return neon(url);
+  } catch (err) {
+    console.error(`Failed to initialize Neon client with DATABASE_URL:`, err);
+    return null;
+  }
+};
+
+async function loadDbFromNeon() {
+  const env = currentEnvironment;
+  if (dbLoadedEnv === env) {
+    return;
+  }
+  
+  if (activeLoadPromises[env]) {
+    return activeLoadPromises[env]!;
+  }
+  
+  activeLoadPromises[env] = (async () => {
+    const sql = getNeonSql();
+    if (!sql) return;
+    
+    const filename = env === 'live' ? 'database_live.json' : 'database.json';
+    const activeFile = getDBFilePath();
+    
+    try {
+      // 1. Ensure table exists
+      await sql`
+        CREATE TABLE IF NOT EXISTS erp_json_store (
+          env VARCHAR(10) PRIMARY KEY,
+          data JSONB NOT NULL,
+          updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+        )
+      `;
+      
+      // 2. Query for the environment's data
+      const rows = await sql`
+        SELECT data FROM erp_json_store WHERE env = ${env}
+      `;
+      
+      let dbData: any;
+      if (rows.length > 0) {
+        dbData = rows[0].data;
+        console.log(`Loaded ${env} database from Neon PostgreSQL`);
+      } else {
+        // If not in database, check if local file exists, otherwise load seed data
+        let initialDB: any;
+        const bundlePath = path.join(process.cwd(), filename);
+        if (fs.existsSync(bundlePath)) {
+          initialDB = JSON.parse(fs.readFileSync(bundlePath, 'utf-8'));
+        } else {
+          initialDB = env === 'live' ? getLiveSeedData() : getSeedData();
+        }
+        
+        // Save it to Postgres
+        await sql`
+          INSERT INTO erp_json_store (env, data)
+          VALUES (${env}, ${JSON.stringify(initialDB)})
+          ON CONFLICT (env) DO UPDATE SET data = EXCLUDED.data, updated_at = CURRENT_TIMESTAMP
+        `;
+        dbData = initialDB;
+        console.log(`Initialized ${env} database in Neon PostgreSQL with seed data`);
+      }
+      
+      // Write it to local cache file and update memory cache
+      fs.writeFileSync(activeFile, JSON.stringify(dbData, null, 2), 'utf-8');
+      cachedDBs[env] = dbData;
+      dbLoadedEnv = env;
+    } catch (err) {
+      console.error(`Error in loadDbFromNeon for ${env}:`, err);
+    }
+  })();
+  
+  try {
+    await activeLoadPromises[env];
+  } finally {
+    activeLoadPromises[env] = null;
+  }
+}
+
+async function saveDbToNeon(data: any) {
+  const sql = getNeonSql();
+  if (!sql) return;
+  
+  const env = currentEnvironment;
+  try {
+    await sql`
+      INSERT INTO erp_json_store (env, data)
+      VALUES (${env}, ${JSON.stringify(data)})
+      ON CONFLICT (env) DO UPDATE SET data = EXCLUDED.data, updated_at = CURRENT_TIMESTAMP
+    `;
+    console.log(`Saved ${env} database to Neon PostgreSQL`);
+  } catch (err) {
+    console.error(`Error saving ${env} database to Neon PostgreSQL:`, err);
+  }
+}
 
 function getDBFilePath(): string {
   const filename = currentEnvironment === 'live' ? 'database_live.json' : 'database.json';
@@ -78,9 +193,14 @@ function normalizeRole(role: string): string {
 
 // Read database helper
 function readDB(): ERPDatabase {
+  const env = currentEnvironment;
+  if (cachedDBs[env]) {
+    return cachedDBs[env]!;
+  }
+  
   const activeFile = getDBFilePath();
   if (!fs.existsSync(activeFile)) {
-    const initialDB = currentEnvironment === 'live' ? getLiveSeedData() : getSeedData();
+    const initialDB = env === 'live' ? getLiveSeedData() : getSeedData();
     writeDB(initialDB);
     return initialDB;
   }
@@ -93,10 +213,11 @@ function readDB(): ERPDatabase {
     if (!db.firstTimeHoldHistory) {
       db.firstTimeHoldHistory = [];
     }
+    cachedDBs[env] = db;
     return db;
   } catch (error) {
     console.error(`Error reading database file ${activeFile}, resetting to seed:`, error);
-    const initialDB = currentEnvironment === 'live' ? getLiveSeedData() : getSeedData();
+    const initialDB = env === 'live' ? getLiveSeedData() : getSeedData();
     writeDB(initialDB);
     return initialDB;
   }
@@ -104,11 +225,20 @@ function readDB(): ERPDatabase {
 
 // Write database helper
 function writeDB(data: ERPDatabase) {
+  const env = currentEnvironment;
+  cachedDBs[env] = data;
+  
   const activeFile = getDBFilePath();
   try {
     fs.writeFileSync(activeFile, JSON.stringify(data, null, 2), 'utf-8');
   } catch (error) {
     console.error(`Error writing database to ${activeFile}:`, error);
+  }
+  
+  if (process.env.DATABASE_URL) {
+    pendingWrite = saveDbToNeon(data).catch(err => {
+      console.error("Error saving DB to Neon:", err);
+    });
   }
 }
 
@@ -609,6 +739,22 @@ function checkLowSerialBalance(db: ERPDatabase, modelCode: string, plantName: st
 
 const app = express();
 app.use(express.json());
+
+// Neon Database integration middleware
+app.use(async (req, res, next) => {
+  const sql = getNeonSql();
+  if (sql) {
+    if (dbLoadedEnv !== currentEnvironment) {
+      try {
+        await loadDbFromNeon();
+      } catch (err) {
+        console.error("Error loading DB from Neon in middleware:", err);
+      }
+    }
+  }
+  
+  next();
+});
 
   // Setup sample DB file initially
   readDB();
@@ -4336,6 +4482,43 @@ app.use(express.json());
     broadcastDashboardStats();
 
     res.json({ success: true, message: 'All serial numbers and operational transaction logs cleared successfully.' });
+  });
+
+  app.post('/api/admin/clear-all', authenticateToken as any, (req: AuthenticatedRequest, res: Response) => {
+    if (req.user?.role !== 'Super Admin') {
+      res.status(403).json({ error: 'Forbidden: Super Admin only' });
+      return;
+    }
+
+    const db = readDB();
+    db.plants = [];
+    db.models = [];
+    db.customers = [];
+    db.serialRanges = [];
+    db.serialNumbers = [];
+    db.production = [];
+    db.transfers = [];
+    db.dispatches = [];
+    db.pdi = [];
+    db.pdiOffered = [];
+    db.firstTimeHoldHistory = [];
+    db.notifications = [];
+    db.auditLogs = [
+      { id: 'log_clear', who: req.user.email, what: 'DATABASE_CLEAR_ALL', when: new Date().toISOString(), oldValue: 'Entire Database', newValue: 'Cleared all except super admin', ipAddress: req.ip || '127.0.0.1' }
+    ];
+
+    // Keep the super admin user
+    const adminUser = db.users.find(u => u.role === 'Super Admin' || u.email === 'admin@erp.com');
+    if (adminUser) {
+      db.users = [adminUser];
+    } else {
+      db.users = [{ id: 'u1', name: 'Super Admin', employeeId: 'EMP001', email: 'admin@erp.com', role: 'Super Admin', plant: 'All', createdAt: new Date().toISOString() }];
+    }
+
+    writeDB(db);
+    broadcastDashboardStats();
+
+    res.json({ success: true, message: 'All master data, configuration settings, and operational logs have been successfully cleared. Super Admin remains active.' });
   });
 
   // 404 API Fallback: Unmatched /api/* routes must return JSON, not HTML index pages
