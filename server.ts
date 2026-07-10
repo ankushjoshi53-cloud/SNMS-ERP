@@ -3,7 +3,6 @@ import path from 'path';
 import fs from 'fs';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
-import { createServer as createViteServer } from 'vite';
 
 import {
   User,
@@ -4333,7 +4332,11 @@ export async function createApp() {
   });
 
   // Vite Middleware Setup or Production Static Files
-  if (process.env.NODE_ENV !== 'production') {
+  if (!process.env.VERCEL && process.env.NODE_ENV !== 'production') {
+    // Vite is a development dependency at runtime. Loading it while a Vercel
+    // function starts can fail because its optional native build dependencies
+    // are not included in the serverless bundle.
+    const { createServer: createViteServer } = await import('vite');
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: 'spa'
