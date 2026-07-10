@@ -591,7 +591,11 @@ function checkLowSerialBalance(db: ERPDatabase, modelCode: string, plantName: st
   }
 }
 
-async function startServer() {
+/**
+ * Creates the API application for both the local Express server and Vercel's
+ * serverless function runtime.
+ */
+export async function createApp() {
   const app = express();
   app.use(express.json());
 
@@ -4343,9 +4347,15 @@ async function startServer() {
     });
   }
 
-  app.listen(PORT, '0.0.0.0', () => {
-    console.log(`ERP Server started successfully on port ${PORT}`);
-  });
+  return app;
 }
 
-startServer();
+// Vercel invokes the exported app from api/index.ts.  Only bind a port when
+// this file is executed directly for local development or a traditional host.
+if (!process.env.VERCEL) {
+  createApp().then(app => {
+    app.listen(PORT, '0.0.0.0', () => {
+      console.log(`ERP Server started successfully on port ${PORT}`);
+    });
+  });
+}
