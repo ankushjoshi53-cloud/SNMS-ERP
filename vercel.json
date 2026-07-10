@@ -3,6 +3,9 @@
   "buildCommand": "vite build",
   "outputDirectory": "dist",
   "functions": {
+    "api/index.ts": {
+      "includeFiles": "database.json"
+    },
     "api/handler.ts": {
       "includeFiles": "database.json"
     }
