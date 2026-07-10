@@ -597,6 +597,16 @@ export async function createApp() {
   const app = express();
   app.use(express.json());
 
+  // Serverless invocations do not share process memory. Keep the selected
+  // environment in the browser and apply it to every API request.
+  app.use((req, _res, next) => {
+    const requestedEnvironment = req.header('x-erp-environment');
+    if (requestedEnvironment === 'demo' || requestedEnvironment === 'live') {
+      currentEnvironment = requestedEnvironment;
+    }
+    next();
+  });
+
   // Setup sample DB file initially
   readDB();
 

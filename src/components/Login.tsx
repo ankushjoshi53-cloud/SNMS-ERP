@@ -14,9 +14,14 @@ export default function Login({ onLoginSuccess }: LoginProps) {
   const [environment, setEnvironment] = useState<'demo' | 'live'>('demo');
 
   useEffect(() => {
+    const savedEnvironment = localStorage.getItem('erp_environment');
+    if (savedEnvironment === 'demo' || savedEnvironment === 'live') {
+      setEnvironment(savedEnvironment);
+    }
+
     api.environment.get()
       .then(res => {
-        if (res && res.environment) {
+        if (!savedEnvironment && res && res.environment) {
           setEnvironment(res.environment);
         }
       })
@@ -25,11 +30,15 @@ export default function Login({ onLoginSuccess }: LoginProps) {
 
   const handleEnvironmentChange = async (env: 'demo' | 'live') => {
     if (env === environment) return;
+    const previousEnvironment = localStorage.getItem('erp_environment');
+    localStorage.setItem('erp_environment', env);
     try {
       await api.environment.set(env);
       setEnvironment(env);
       window.location.reload();
     } catch (err) {
+      if (previousEnvironment) localStorage.setItem('erp_environment', previousEnvironment);
+      else localStorage.removeItem('erp_environment');
       console.error('Error setting environment:', err);
     }
   };

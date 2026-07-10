@@ -4,9 +4,11 @@ const API_BASE = '/api';
 
 function getHeaders() {
   const token = localStorage.getItem('erp_token');
+  const environment = localStorage.getItem('erp_environment');
   return {
     'Content-Type': 'application/json',
-    ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+    ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+    ...(environment === 'live' || environment === 'demo' ? { 'X-ERP-Environment': environment } : {})
   };
 }
 
