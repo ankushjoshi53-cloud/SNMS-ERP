@@ -1,0 +1,6 @@
+{
+  "name": "SNMS-ERP",
+  "description": "An enterprise-grade ERP module for managing, tracking, and allocating battery serial numbers for lead-acid manufacturing plants.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

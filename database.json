@@ -1,0 +1,404 @@
+{
+  "users": [
+    {
+      "id": "u1",
+      "name": "Super Admin",
+      "employeeId": "EMP001",
+      "email": "admin@erp.com",
+      "role": "Super Admin",
+      "plant": "All",
+      "createdAt": "2026-07-01T00:00:00.000Z"
+    },
+    {
+      "id": "u2",
+      "name": "QA Manager",
+      "employeeId": "EMP002",
+      "email": "qa@erp.com",
+      "role": "QA",
+      "plant": "Plant Alpha",
+      "createdAt": "2026-07-01T00:00:00.000Z"
+    },
+    {
+      "id": "u3",
+      "name": "Plant Operator",
+      "employeeId": "EMP003",
+      "email": "plant@erp.com",
+      "role": "Production",
+      "plant": "Plant Alpha",
+      "createdAt": "2026-07-01T00:00:00.000Z"
+    },
+    {
+      "id": "u4",
+      "name": "PDI Inspector",
+      "employeeId": "EMP004",
+      "email": "pdi@erp.com",
+      "role": "PDI",
+      "plant": "Plant Alpha",
+      "createdAt": "2026-07-01T00:00:00.000Z"
+    },
+    {
+      "id": "u5",
+      "name": "Dispatch Officer",
+      "employeeId": "EMP005",
+      "email": "dispatch@erp.com",
+      "role": "Dispatch",
+      "plant": "Plant Alpha",
+      "createdAt": "2026-07-01T00:00:00.000Z"
+    },
+    {
+      "id": "u6",
+      "name": "Viewer Auditor",
+      "employeeId": "EMP006",
+      "email": "viewer@erp.com",
+      "role": "Viewer",
+      "plant": "All",
+      "createdAt": "2026-07-01T00:00:00.000Z"
+    }
+  ],
+  "userPasswords": {
+    "admin@erp.com": "$2b$10$GIfMaxueWM3fu5BAQGcPP.j13PvJpxoTptE8Xlgicqi/nDUwZZf42",
+    "qa@erp.com": "$2b$10$GIfMaxueWM3fu5BAQGcPP.Ip7ZeGNP3fIjc.bBi.Y7f6JGJc/OEhe",
+    "plant@erp.com": "$2b$10$GIfMaxueWM3fu5BAQGcPP.KHXmhn2nKBFSePaihxRrY1i4MYoLXGW",
+    "pdi@erp.com": "$2b$10$GIfMaxueWM3fu5BAQGcPP.in32/ICDdmvDcYsWf2x.cLVc3MFZ892",
+    "dispatch@erp.com": "$2b$10$GIfMaxueWM3fu5BAQGcPP.1ht1dOe9ShQ/cTWHhJhDD9g9hHU8xcm",
+    "viewer@erp.com": "$2b$10$GIfMaxueWM3fu5BAQGcPP.vWd/akLWwMyhTi2N4ZHsXrz9x05egSO"
+  },
+  "plants": [
+    {
+      "id": "p1",
+      "name": "Plant Alpha",
+      "location": "Mumbai, India",
+      "createdAt": "2026-07-01T00:00:00.000Z"
+    },
+    {
+      "id": "p2",
+      "name": "Plant Beta",
+      "location": "Chennai, India",
+      "createdAt": "2026-07-01T00:00:00.000Z"
+    },
+    {
+      "id": "p3",
+      "name": "Plant Gamma",
+      "location": "Delhi, India",
+      "createdAt": "2026-07-01T00:00:00.000Z"
+    }
+  ],
+  "models": [
+    {
+      "id": "m1",
+      "name": "PowerPack XL",
+      "code": "M22",
+      "batteryType": "Tubular",
+      "capacity": "150Ah",
+      "startSerial": "1000",
+      "endSerial": "9999",
+      "currentSerial": "100001",
+      "plant": "Plant Alpha",
+      "status": "Active",
+      "createdAt": "2026-07-01T00:00:00.000Z",
+      "customerName": ""
+    },
+    {
+      "id": "m2",
+      "name": "UltraVolt Pro",
+      "code": "M24",
+      "batteryType": "Flat Plate",
+      "capacity": "200Ah",
+      "startSerial": "2000",
+      "endSerial": "2999",
+      "currentSerial": "100001",
+      "plant": "Plant Beta",
+      "status": "Active",
+      "createdAt": "2026-07-01T00:00:00.000Z"
+    },
+    {
+      "id": "m3",
+      "name": "SolarMax Tub",
+      "code": "S15",
+      "batteryType": "Tubular",
+      "capacity": "120Ah",
+      "startSerial": "5000",
+      "endSerial": "5999",
+      "currentSerial": "100001",
+      "plant": "Plant Alpha",
+      "status": "Active",
+      "createdAt": "2026-07-01T00:00:00.000Z"
+    }
+  ],
+  "customers": [
+    {
+      "id": "cust-1783593197619",
+      "name": "Microtek",
+      "code": "MTK",
+      "address": "Delhi",
+      "gst": "27AAAAA1111A1Z1",
+      "state": "Delhi",
+      "totalDigitsOfSerial": 13,
+      "numericDigitsOfSerial": 9,
+      "uniqueCodeLength": 4,
+      "authorizations": {
+        "login": false
+      },
+      "createdAt": "2026-07-09T10:33:17.619Z"
+    }
+  ],
+  "serialRanges": [],
+  "serialNumbers": [],
+  "production": [],
+  "transfers": [],
+  "dispatches": [],
+  "pdi": [],
+  "auditLogs": [
+    {
+      "id": "log-1783598393458-333",
+      "who": "admin@erp.com",
+      "what": "PDI_OFFERED_RANGE",
+      "when": "2026-07-09T11:59:53.458Z",
+      "oldValue": "None",
+      "newValue": "Registered PDI Offered for M22 (Plant Beta): Start: abcd000002001, End: abcd000002005. OK: 4, Hold: 0, Rejected: 1. Aesthetic Issue Check: false",
+      "ipAddress": "127.0.0.1"
+    },
+    {
+      "id": "log-1783598363280-876",
+      "who": "admin@erp.com",
+      "what": "PDI_OFFERED_RANGE",
+      "when": "2026-07-09T11:59:23.280Z",
+      "oldValue": "None",
+      "newValue": "Registered PDI Offered for M22 (Plant Beta): Start: abcd000002001, End: abcd000002005. OK: 0, Hold: 5, Rejected: 0. Aesthetic Issue Check: false",
+      "ipAddress": "127.0.0.1"
+    },
+    {
+      "id": "log-1783596512149-662",
+      "who": "admin@erp.com",
+      "what": "PDI_OFFERED_RANGE",
+      "when": "2026-07-09T11:28:32.149Z",
+      "oldValue": "None",
+      "newValue": "Registered PDI Offered for M22 (Plant Alpha): Start: abcd000002056, End: abcd000002060. OK: 4, Hold: 0, Rejected: 1. Aesthetic Issue Check: false",
+      "ipAddress": "127.0.0.1"
+    },
+    {
+      "id": "log-1783596448177-994",
+      "who": "admin@erp.com",
+      "what": "PDI_OFFERED_RANGE",
+      "when": "2026-07-09T11:27:28.177Z",
+      "oldValue": "None",
+      "newValue": "Registered PDI Offered for M22 (Plant Alpha): Start: abcd000002056, End: abcd000002060. OK: 0, Hold: 5, Rejected: 0. Aesthetic Issue Check: false",
+      "ipAddress": "127.0.0.1"
+    },
+    {
+      "id": "log-1783596429289-213",
+      "who": "admin@erp.com",
+      "what": "PDI_OFFERED_RANGE",
+      "when": "2026-07-09T11:27:09.289Z",
+      "oldValue": "None",
+      "newValue": "Registered PDI Offered for M22 (Plant Alpha): Start: abcd000002051, End: abcd000002055. OK: 5, Hold: 0, Rejected: 0. Aesthetic Issue Check: false",
+      "ipAddress": "127.0.0.1"
+    },
+    {
+      "id": "log-1783595810843-896",
+      "who": "admin@erp.com",
+      "what": "PRODUCTION_ENTRY",
+      "when": "2026-07-09T11:16:50.843Z",
+      "oldValue": "Allotted",
+      "newValue": "Registered Packing Line Consumption for range abcd000002051 to abcd000002060 (10 batteries)",
+      "ipAddress": "127.0.0.1"
+    },
+    {
+      "id": "log-1783595785404-209",
+      "who": "admin@erp.com",
+      "what": "PRODUCTION_ENTRY",
+      "when": "2026-07-09T11:16:25.404Z",
+      "oldValue": "Allotted",
+      "newValue": "Registered Packing Line Consumption for range abcd000002001 to abcd000002020 (20 batteries)",
+      "ipAddress": "127.0.0.1"
+    },
+    {
+      "id": "log-1783595383834-340",
+      "who": "admin@erp.com",
+      "what": "EXECUTE_TRANSFER",
+      "when": "2026-07-09T11:09:43.834Z",
+      "oldValue": "None",
+      "newValue": "Transferred 50 items of M22 from Plant Alpha to Plant Beta immediately",
+      "ipAddress": "127.0.0.1"
+    },
+    {
+      "id": "log-1783594006290-438",
+      "who": "admin@erp.com",
+      "what": "UPDATE_ALLOTMENT",
+      "when": "2026-07-09T10:46:46.290Z",
+      "oldValue": "{\"id\":\"allot-1783589040161\",\"date\":\"2026-07-09\",\"modelCode\":\"M22\",\"plantName\":\"Plant Alpha\",\"startSerial\":\"ABCD001001\",\"endSerial\":\"ABCD002000\",\"quantity\":1000,\"remarks\":\"\",\"allottedBy\":\"Super Admin\",\"createdAt\":\"2026-07-09T09:24:00.161Z\",\"customerName\":\"TATA Motors Ltd\",\"year\":\"2026\",\"month\":\"07\",\"digitsLength\":6,\"serialCode\":\"ABCD\",\"status\":\"Active\"}",
+      "newValue": "Updated allotment allot-1783589040161",
+      "ipAddress": "127.0.0.1"
+    },
+    {
+      "id": "log-1783593985100-81",
+      "who": "admin@erp.com",
+      "what": "ALLOT_SERIAL_RANGE",
+      "when": "2026-07-09T10:46:25.100Z",
+      "oldValue": "None",
+      "newValue": "Allotted 100 serials of M22 (abcd000002001 to abcd000002100) to Plant Alpha",
+      "ipAddress": "127.0.0.1"
+    },
+    {
+      "id": "log-1783593930426-551",
+      "who": "admin@erp.com",
+      "what": "UPDATE_CUSTOMER",
+      "when": "2026-07-09T10:45:30.426Z",
+      "oldValue": "{\"id\":\"cust-1783593197619\",\"name\":\"Microtek\",\"code\":\"MTK\",\"address\":\"Delhi\",\"gst\":\"27AAAAA1111A1Z1\",\"state\":\"Delhi\",\"totalDigitsOfSerial\":8,\"numericDigitsOfSerial\":4,\"uniqueCodeLength\":4,\"authorizations\":{\"login\":false},\"createdAt\":\"2026-07-09T10:33:17.619Z\"}",
+      "newValue": "Updated Customer: Microtek",
+      "ipAddress": "127.0.0.1"
+    },
+    {
+      "id": "log-1783593864371-430",
+      "who": "admin@erp.com",
+      "what": "UPDATE_ALLOTMENT",
+      "when": "2026-07-09T10:44:24.371Z",
+      "oldValue": "{\"id\":\"allot-1783589040161\",\"date\":\"2026-07-09\",\"modelCode\":\"M22\",\"plantName\":\"Plant Alpha\",\"startSerial\":\"ABCD001001\",\"endSerial\":\"ABCD002000\",\"quantity\":1000,\"remarks\":\"\",\"allottedBy\":\"Super Admin\",\"createdAt\":\"2026-07-09T09:24:00.161Z\",\"customerName\":\"TATA Motors Ltd\",\"year\":\"2026\",\"month\":\"07\",\"digitsLength\":6,\"serialCode\":\"ABCD\",\"status\":\"Active\"}",
+      "newValue": "Updated allotment allot-1783589040161",
+      "ipAddress": "127.0.0.1"
+    },
+    {
+      "id": "log-1783593339563-569",
+      "who": "admin@erp.com",
+      "what": "UPDATE_ALLOTMENT",
+      "when": "2026-07-09T10:35:39.563Z",
+      "oldValue": "{\"id\":\"allot-1783589040161\",\"date\":\"2026-07-09\",\"modelCode\":\"M22\",\"plantName\":\"Plant Alpha\",\"startSerial\":\"ABCD001001\",\"endSerial\":\"ABCD002000\",\"quantity\":1000,\"remarks\":\"\",\"allottedBy\":\"Super Admin\",\"createdAt\":\"2026-07-09T09:24:00.161Z\",\"customerName\":\"TATA Motors Ltd\",\"year\":\"2026\",\"month\":\"07\",\"digitsLength\":6,\"serialCode\":\"ABCD\",\"status\":\"Active\"}",
+      "newValue": "Updated allotment allot-1783589040161",
+      "ipAddress": "127.0.0.1"
+    },
+    {
+      "id": "log-1783593277030-289",
+      "who": "admin@erp.com",
+      "what": "UPDATE_ALLOTMENT",
+      "when": "2026-07-09T10:34:37.030Z",
+      "oldValue": "{\"id\":\"allot-1783589040161\",\"date\":\"2026-07-09\",\"modelCode\":\"M22\",\"plantName\":\"Plant Alpha\",\"startSerial\":\"Microtek001001\",\"endSerial\":\"Microtek002000\",\"quantity\":1000,\"remarks\":\"\",\"allottedBy\":\"Super Admin\",\"createdAt\":\"2026-07-09T09:24:00.161Z\",\"customerName\":\"TATA Motors Ltd\",\"year\":\"2026\",\"month\":\"07\",\"digitsLength\":6,\"serialCode\":\"Microtek\",\"status\":\"Active\"}",
+      "newValue": "Updated allotment allot-1783589040161",
+      "ipAddress": "127.0.0.1"
+    },
+    {
+      "id": "log-1783593197625-224",
+      "who": "admin@erp.com",
+      "what": "CREATE_CUSTOMER",
+      "when": "2026-07-09T10:33:17.625Z",
+      "oldValue": "None",
+      "newValue": "Created Customer: Microtek",
+      "ipAddress": "127.0.0.1"
+    },
+    {
+      "id": "log-1783591633097-518",
+      "who": "admin@erp.com",
+      "what": "DELETE_CUSTOMER",
+      "when": "2026-07-09T10:07:13.097Z",
+      "oldValue": "{\"id\":\"c3\",\"name\":\"Luminous Power Agency\",\"code\":\"CUST-LUMI\",\"address\":\"Industrial Area Phase 2, Baddi\",\"gst\":\"02CCCCC3333C3Z3\",\"state\":\"Himachal Pradesh\",\"createdAt\":\"2026-07-01T00:00:00.000Z\",\"totalDigitsOfSerial\":12,\"numericDigitsOfSerial\":4}",
+      "newValue": "None",
+      "ipAddress": "127.0.0.1"
+    },
+    {
+      "id": "log-1783591631394-250",
+      "who": "admin@erp.com",
+      "what": "DELETE_CUSTOMER",
+      "when": "2026-07-09T10:07:11.394Z",
+      "oldValue": "{\"id\":\"c2\",\"name\":\"Exide Distributors\",\"code\":\"CUST-EXID\",\"address\":\"Salt Lake Sector V, Kolkata\",\"gst\":\"19BBBBB2222B2Z2\",\"state\":\"West Bengal\",\"createdAt\":\"2026-07-01T00:00:00.000Z\",\"totalDigitsOfSerial\":12,\"numericDigitsOfSerial\":4}",
+      "newValue": "None",
+      "ipAddress": "127.0.0.1"
+    },
+    {
+      "id": "log-1783591629357-486",
+      "who": "admin@erp.com",
+      "what": "DELETE_CUSTOMER",
+      "when": "2026-07-09T10:07:09.357Z",
+      "oldValue": "{\"id\":\"c1\",\"name\":\"TATA Motors Ltd\",\"code\":\"CUST-TATA\",\"address\":\"Pune Tech Park, Sector 4\",\"gst\":\"27AAAAA1111A1Z1\",\"state\":\"Maharashtra\",\"createdAt\":\"2026-07-01T00:00:00.000Z\",\"totalDigitsOfSerial\":12,\"numericDigitsOfSerial\":4}",
+      "newValue": "None",
+      "ipAddress": "127.0.0.1"
+    },
+    {
+      "id": "log-1783591055882-118",
+      "who": "admin@erp.com",
+      "what": "UPDATE_MODEL",
+      "when": "2026-07-09T09:57:35.882Z",
+      "oldValue": "{\"id\":\"m1\",\"name\":\"PowerPack XL\",\"code\":\"M22\",\"batteryType\":\"Tubular\",\"capacity\":\"150Ah\",\"startSerial\":\"1000\",\"endSerial\":\"9999\",\"currentSerial\":\"2001\",\"plant\":\"Plant Alpha\",\"status\":\"Active\",\"createdAt\":\"2026-07-01T00:00:00.000Z\"}",
+      "newValue": "{\"id\":\"m1\",\"name\":\"PowerPack XL\",\"code\":\"M22\",\"batteryType\":\"Tubular\",\"capacity\":\"150Ah\",\"startSerial\":\"1000\",\"endSerial\":\"9999\",\"currentSerial\":\"2001\",\"plant\":\"Plant Alpha\",\"status\":\"Active\",\"createdAt\":\"2026-07-01T00:00:00.000Z\",\"customerName\":\"\"}",
+      "ipAddress": "127.0.0.1"
+    },
+    {
+      "id": "log-1783590464537-469",
+      "who": "admin@erp.com",
+      "what": "UPDATE_CUSTOMER",
+      "when": "2026-07-09T09:47:44.537Z",
+      "oldValue": "{\"id\":\"c3\",\"name\":\"Luminous Power Agency\",\"code\":\"CUST-LUMI\",\"address\":\"Industrial Area Phase 2, Baddi\",\"gst\":\"02CCCCC3333C3Z3\",\"state\":\"Himachal Pradesh\",\"createdAt\":\"2026-07-01T00:00:00.000Z\"}",
+      "newValue": "Updated Customer: Luminous Power Agency",
+      "ipAddress": "127.0.0.1"
+    },
+    {
+      "id": "log-1783590458484-899",
+      "who": "admin@erp.com",
+      "what": "UPDATE_CUSTOMER",
+      "when": "2026-07-09T09:47:38.484Z",
+      "oldValue": "{\"id\":\"c2\",\"name\":\"Exide Distributors\",\"code\":\"CUST-EXID\",\"address\":\"Salt Lake Sector V, Kolkata\",\"gst\":\"19BBBBB2222B2Z2\",\"state\":\"West Bengal\",\"createdAt\":\"2026-07-01T00:00:00.000Z\"}",
+      "newValue": "Updated Customer: Exide Distributors",
+      "ipAddress": "127.0.0.1"
+    },
+    {
+      "id": "log-1783590449254-446",
+      "who": "admin@erp.com",
+      "what": "UPDATE_CUSTOMER",
+      "when": "2026-07-09T09:47:29.254Z",
+      "oldValue": "{\"id\":\"c1\",\"name\":\"TATA Motors Ltd\",\"code\":\"CUST-TATA\",\"address\":\"Pune Tech Park, Sector 4\",\"gst\":\"27AAAAA1111A1Z1\",\"state\":\"Maharashtra\",\"createdAt\":\"2026-07-01T00:00:00.000Z\",\"totalDigitsOfSerial\":12,\"numericDigitsOfSerial\":4}",
+      "newValue": "Updated Customer: TATA Motors Ltd",
+      "ipAddress": "127.0.0.1"
+    },
+    {
+      "id": "log-1783589395592-526",
+      "who": "admin@erp.com",
+      "what": "UPDATE_CUSTOMER",
+      "when": "2026-07-09T09:29:55.592Z",
+      "oldValue": "{\"id\":\"c1\",\"name\":\"TATA Motors Ltd\",\"code\":\"CUST-TATA\",\"address\":\"Pune Tech Park, Sector 4\",\"gst\":\"27AAAAA1111A1Z1\",\"state\":\"Maharashtra\",\"createdAt\":\"2026-07-01T00:00:00.000Z\"}",
+      "newValue": "Updated Customer: TATA Motors Ltd",
+      "ipAddress": "127.0.0.1"
+    },
+    {
+      "id": "log-1783589040184-944",
+      "who": "admin@erp.com",
+      "what": "ALLOT_SERIAL_RANGE",
+      "when": "2026-07-09T09:24:00.184Z",
+      "oldValue": "None",
+      "newValue": "Allotted 1000 serials of M22 (Microtek001001 to Microtek002000) to Plant Alpha",
+      "ipAddress": "127.0.0.1"
+    }
+  ],
+  "notifications": [
+    {
+      "id": "n-1783595383828",
+      "message": "Inter-Plant Transfer: 50 batteries (M22) transferred from Plant Alpha to Plant Beta successfully.",
+      "type": "success",
+      "date": "2026-07-09T11:09:43.828Z",
+      "read": false
+    },
+    {
+      "id": "n1",
+      "message": "Low Serial Balance Alert: Model M24 running serial range is nearly exhausted at Plant Beta.",
+      "type": "warning",
+      "date": "2026-07-05T00:00:00.000Z",
+      "read": false,
+      "modelCode": "M24"
+    },
+    {
+      "id": "n2",
+      "message": "Low Serial Balance Alert: Model S15 has zero available range allocated at Plant Alpha.",
+      "type": "danger",
+      "date": "2026-07-05T00:00:00.000Z",
+      "read": false,
+      "modelCode": "S15"
+    },
+    {
+      "id": "n3",
+      "message": "Transfer Request Approved: M222026071003 transfer from Plant Alpha to Plant Beta approved.",
+      "type": "success",
+      "date": "2026-07-04T00:00:00.000Z",
+      "read": true
+    }
+  ],
+  "pdiOffered": [],
+  "dispatch": [],
+  "firstTimeHoldHistory": []
+}
