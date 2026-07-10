@@ -50,6 +50,11 @@ interface ERPDatabase {
   firstTimeHoldHistory?: any[];
 }
 
+// Vercel instances have a read-only, ephemeral filesystem. Keep a warm
+// instance's database in memory so login, audit logging, and environment
+// switching do not fail when a JSON file cannot be written.
+let serverlessDatabase: ERPDatabase | undefined;
+
 function normalizeRole(role: string): string {
   if (!role) return 'Viewer';
   if (role === 'QA Head' || role === 'QA Manager') return 'QA';
@@ -60,9 +65,16 @@ function normalizeRole(role: string): string {
 
 // Read database helper
 function readDB(): ERPDatabase {
+  if (process.env.VERCEL && serverlessDatabase) {
+    return serverlessDatabase;
+  }
+
   const activeFile = getDBFilePath();
   if (!fs.existsSync(activeFile)) {
     const initialDB = currentEnvironment === 'live' ? getLiveSeedData() : getSeedData();
+    if (process.env.VERCEL) {
+      serverlessDatabase = initialDB;
+    }
     writeDB(initialDB);
     return initialDB;
   }
@@ -75,10 +87,16 @@ function readDB(): ERPDatabase {
     if (!db.firstTimeHoldHistory) {
       db.firstTimeHoldHistory = [];
     }
+    if (process.env.VERCEL) {
+      serverlessDatabase = db;
+    }
     return db;
   } catch (error) {
     console.error(`Error reading database file ${activeFile}, resetting to seed:`, error);
     const initialDB = currentEnvironment === 'live' ? getLiveSeedData() : getSeedData();
+    if (process.env.VERCEL) {
+      serverlessDatabase = initialDB;
+    }
     writeDB(initialDB);
     return initialDB;
   }
@@ -86,6 +104,11 @@ function readDB(): ERPDatabase {
 
 // Write database helper
 function writeDB(data: ERPDatabase) {
+  if (process.env.VERCEL) {
+    serverlessDatabase = data;
+    return;
+  }
+
   const activeFile = getDBFilePath();
   try {
     fs.writeFileSync(activeFile, JSON.stringify(data, null, 2), 'utf-8');

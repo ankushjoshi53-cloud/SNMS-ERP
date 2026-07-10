@@ -45,8 +45,13 @@ export default function Header({ user, onLogout, dark, setDark, currentTab, onTo
   }, [user]);
 
   useEffect(() => {
+    const savedEnvironment = localStorage.getItem('erp_environment');
+    if (savedEnvironment === 'demo' || savedEnvironment === 'live') {
+      setEnvironment(savedEnvironment);
+    }
+
     api.environment.get().then(res => {
-      if (res && res.environment) {
+      if (!savedEnvironment && res && res.environment) {
         setEnvironment(res.environment);
       }
     }).catch(console.error);
@@ -58,12 +63,16 @@ export default function Header({ user, onLogout, dark, setDark, currentTab, onTo
 
   const confirmEnvironmentSwitch = async () => {
     const targetEnv = environment === 'demo' ? 'live' : 'demo';
+    const previousEnvironment = localStorage.getItem('erp_environment');
+    localStorage.setItem('erp_environment', targetEnv);
     try {
       await api.environment.set(targetEnv);
       setEnvironment(targetEnv);
       setShowEnvConfirm(false);
       window.location.reload();
     } catch (err) {
+      if (previousEnvironment) localStorage.setItem('erp_environment', previousEnvironment);
+      else localStorage.removeItem('erp_environment');
       console.error(err);
     }
   };
