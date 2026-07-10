@@ -28,6 +28,25 @@ const JWT_SECRET = process.env.JWT_SECRET || 'super_secret_lead_acid_erp_key';
 let currentEnvironment: 'live' | 'demo' = 'demo';
 
 function getDBFilePath(): string {
+  const filename = currentEnvironment === 'live' ? 'database_live.json' : 'database.json';
+
+  // Vercel's deployment filesystem is read-only. Copy an optional seed file
+  // into the function's writable temporary directory before using it.
+  if (process.env.VERCEL) {
+    const tmpPath = path.join('/tmp', filename);
+    if (!fs.existsSync(tmpPath)) {
+      const bundledSeedPath = path.join(process.cwd(), filename);
+      if (fs.existsSync(bundledSeedPath)) {
+        try {
+          fs.copyFileSync(bundledSeedPath, tmpPath);
+        } catch (error) {
+          console.error(`Unable to copy ${filename} to Vercel temp storage:`, error);
+        }
+      }
+    }
+    return tmpPath;
+  }
+
   return currentEnvironment === 'live' ? DB_FILE_LIVE : DB_FILE_DEMO;
 }
 
@@ -625,6 +644,9 @@ export async function createApp() {
   app.use((req, _res, next) => {
     const requestedEnvironment = req.header('x-erp-environment');
     if (requestedEnvironment === 'demo' || requestedEnvironment === 'live') {
+      if (requestedEnvironment !== currentEnvironment) {
+        serverlessDatabase = undefined;
+      }
       currentEnvironment = requestedEnvironment;
     }
     next();
@@ -641,6 +663,9 @@ export async function createApp() {
   app.post('/api/environment', (req: Request, res: Response) => {
     const { environment } = req.body;
     if (environment === 'live' || environment === 'demo') {
+      if (environment !== currentEnvironment) {
+        serverlessDatabase = undefined;
+      }
       currentEnvironment = environment;
       readDB();
       res.json({ success: true, environment: currentEnvironment });
