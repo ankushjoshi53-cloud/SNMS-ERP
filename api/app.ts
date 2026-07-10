@@ -19,7 +19,7 @@ import {
   Notification,
   UserRole,
   PDIOfferedRange
-} from '../types';
+} from '../src/types';
 
 const DB_FILE_DEMO = path.join(process.cwd(), 'database.json');
 const DB_FILE_LIVE = path.join(process.cwd(), 'database_live.json');

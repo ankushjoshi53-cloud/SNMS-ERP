@@ -1,4 +1,4 @@
-import { createApp } from './src/server/app';
+import { createApp } from './api/app';
 
 // `npm start` runs the bundled dist/server.cjs file. Ensure that bundle uses
 // the production static-server branch even when NODE_ENV was not supplied.
